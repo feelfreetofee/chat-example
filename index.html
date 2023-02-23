@@ -1,0 +1,39 @@
+<html>
+	<head>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			var socket = io();
+
+			function CreateElement(parent = document.body, type = 'div') {
+				var element = document.createElement(type)
+				parent.appendChild(element);
+				return element
+			}
+
+			window.onpageshow = function () {
+				var container = CreateElement()
+
+				var chat = CreateElement(container)
+				
+				socket.on("recieve_message", data => {
+					var box = CreateElement(chat)
+
+					CreateElement(box, 'p').innerHTML = 'Anonymous'
+					
+					CreateElement(box, 'p').innerHTML = data
+				})
+
+				var input = CreateElement(container, 'input')
+
+				input.addEventListener("keyup", event => {
+					if (event.key === "Enter") {
+						socket.emit('send_message', {message : input.value})
+						input.value = ''
+					}
+				})
+			};
+		</script>
+	</head>
+	<body>
+	</body>
+</html>
